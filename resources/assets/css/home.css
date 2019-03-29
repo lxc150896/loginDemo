@@ -1,0 +1,30 @@
+#logout {
+    color:#ffffff;
+}
+
+table {
+    width:80%;
+    text-align: center;;
+}
+
+table,th,td {
+    border:1px solid gray;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding:7px 15px;
+}
+
+th {
+    background-color: #008040;
+    color: white;
+}
+
+tr {
+    background-color: #f0f0f0;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
