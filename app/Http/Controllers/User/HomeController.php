@@ -6,20 +6,20 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 use App\Http\Requests\LoginRequest;
-use App\Repositories\Contracts\UserInterface;
+use App\Repositories\Contracts\UserRepository;
 
 class HomeController extends Controller
 {
-    protected $user;
+    protected $userRepository;
 
-    public function __construct(UserInterface $postCustomer)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->user = $user;
+        $this->userRepository = $userRepository;
     }
 
     public function getHome()
     {
-        $arrUser = $this->user->getAll();
+        $arrUser = $this->userRepository->getAll();
         return view('user.home', compact('arrUser'));
     }
     
@@ -37,29 +37,7 @@ class HomeController extends Controller
 
     public function postRegisterUser(LoginRequest $request)
     {
-        $this->user->create($request);
+        $this->userRepository->create($request);
         return redirect('user.login');
-    }
-
-    public function getUpdateUser(LoginRequest $request, $id)
-    {
-        try {
-            $this->user->update($id, $request);
-        } catch (Exception $e) {
-            Session::flash('unsuccess', trans('settings.unsuccess.error', ['messages' => $e->getMessage()]));
-
-            return view('errors.error');
-        }
-    }
-
-    public function getDeleteUser($id)
-    {
-        try {
-            $this->user->delete($id);
-        } catch (Exception $e) {
-            Session::flash('unsuccess', trans('settings.unsuccess.error', ['messages' => $e->getMessage()]));
-
-            return view('errors.error');
-        }
     }
 }

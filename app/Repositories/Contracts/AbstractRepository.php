@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface AbstractRepositoryInterface
+interface AbstractRepository
 {
     public function model();
 }
