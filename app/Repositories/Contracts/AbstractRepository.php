@@ -4,5 +4,13 @@ namespace App\Repositories\Contracts;
 
 interface AbstractRepository
 {
-    public function model();
+    public function getAll();
+
+    public function update($id, $request);
+
+    public function delete($id);
+
+    public function find($id);
+
+    public function create($request);
 }

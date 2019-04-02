@@ -19,8 +19,13 @@ class HomeController extends Controller
 
     public function getHome()
     {
+        return view('user.home');
+    }
+
+    public function getUser()
+    {
         $arrUser = $this->userRepository->getAll();
-        return view('user.home', compact('arrUser'));
+        return response()->json($arrUser);
     }
     
     public function getLogout()

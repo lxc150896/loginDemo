@@ -37,8 +37,9 @@ function deleteUser(button) {
         url: '/admin/home/delete/' + id,
         method: 'POST',
         success: function(res) {
-            console.log($('#user-' + id));
-            $('#user-' + id).remove();
+            if (res == 0) {
+                $('#user' + id).empty();
+            }
         }
     })
 }

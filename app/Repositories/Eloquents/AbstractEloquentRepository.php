@@ -4,29 +4,99 @@ namespace App\Repositories\Eloquents;
 
 abstract class AbstractEloquentRepository
 {
-    abstract public function model();
+    /**
+     * @var \Illuminate\Database\Eloquent\Model
+     */
+    protected $_model;
 
-    public function find($id)
+    /**
+     * EloquentRepository constructor.
+     */
+    public function __construct()
     {
-        return $this->model()
-        ->find($id);
+        $this->setModel();
     }
 
-    public function update($id, $dataUser)
+    /**
+     * get model
+     * @return string
+     */
+    abstract public function getModel();
+
+    /**
+     * Set model
+     */
+    public function setModel()
     {
-        $model = $this->model()->findOrFail($id);
-        if ($model) {
-            return $model->update($dataUser);
+        $this->_model = app()->make(
+            $this->getModel()
+        );
+    }
+
+    /**
+     * Get All
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getAll()
+    {
+
+        return $this->_model->all();
+    }
+
+    /**
+     * Get one
+     * @param $id
+     * @return mixed
+     */
+    public function findId($id)
+    {
+        $result = $this->_model->findOrFail($id);
+
+        return $result;
+    }
+
+    /**
+     * Create
+     * @param array $attributes
+     * @return mixed
+     */
+    public function create($attributes)
+    {
+
+        return $this->_model->create($attributes);
+    }
+
+    /**
+     * Update
+     * @param $id
+     * @param array $attributes
+     * @return bool|mixed
+     */
+    public function update($id, $attributes)
+    {
+        $result = $this->findId($id);
+        if ($result) {
+            $result->update($attributes);
+
+            return $result;
         }
 
         return false;
     }
 
+    /**
+     * Delete
+     *
+     * @param $id
+     * @return bool
+     */
     public function delete($id)
     {
-        $model = $this->model()->findOrFail($id);
-        if ($model) {
-            return $model->delete();
+        $result = $this->findId($id);
+        if ($result) {
+            $result->delete();
+
+            return true;
         }
 
         return false;
