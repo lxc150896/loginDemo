@@ -1,9 +1,20 @@
+*{
+    margin: 20px;
+    padding: 20px;
+}
+
+#content {
+    width: 700px;
+    height: auto;
+}
+
 #logout {
     color:#ffffff;
+    float: right;
 }
 
 table {
-    width:80%;
+    width:100%;
     text-align: center;;
 }
 
@@ -27,4 +38,22 @@ tr {
 
 tr:hover {
     background-color: #ddd;
+}
+
+.error span {
+    color: red;
+    text-align: center;
+}
+
+.susses span {
+    color: white;
+}
+
+.susses {
+    float: right;
+    margin-right: 300px;
+}
+
+tr th {
+    text-align: center;
 }

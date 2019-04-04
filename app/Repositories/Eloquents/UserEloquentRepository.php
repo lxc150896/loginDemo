@@ -7,16 +7,14 @@ use App\Repositories\Contracts\UserRepository;
 
 class UserEloquentRepository extends AbstractEloquentRepository implements UserRepository
 {
-    public function model()
+    public function getModel()
     {
-        return new User;
+        return \App\Model\User::class;
     }
 
-    public function getAll($data = [], $with = [], $dataSelect = ['*'])
+    public function find($id)
     {
-        return $this->model()
-        ->select($dataSelect)
-        ->where($data)
-        ->get();
+        return $this->_model
+        ->find($id);
     }
 }

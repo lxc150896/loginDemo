@@ -21,7 +21,9 @@ Route::group(['namespace' => 'User'], function () {
     Route::get('logout', 'HomeController@getLogout');
     Route::group(['prefix' => 'admin', 'middleware' => 'CheckLogedOut'], function() {
         Route::get('home', 'HomeController@getHome');
-        Route::post('home/edit/{id}', 'UserController@postEditUser');
-        Route::post('home/delete/{id}', 'UserController@postDeleteUser');
+        Route::get('home/user', 'HomeController@getUser')->name('user');
+        Route::post('home/add', 'UserController@postAddUser')->name('addUser');
+        Route::put('home/update/{id}', 'UserController@postEditUser')->name('editUser');
+        Route::delete('home/delete/{id}', 'UserController@postDeleteUser')->name('deleteUser');
     });
 });
