@@ -6,5 +6,5 @@ use App\Model\User;
 
 interface UserRepository extends AbstractRepository
 {
-    //
+    public function find($id);
 }

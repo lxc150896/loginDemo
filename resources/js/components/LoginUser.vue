@@ -1,29 +1,33 @@
 <template>
     <div class="contacts">
+        <div id="dropdown" class="dropdown">
+            <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Messages
+                <UserList :contacts="contacts" @selected="startConversationWith"/>
+            </button>
+        </div>
         <div>
-            <button type="button" class="btn btn-info" data-toggle="modal" :data-target="'#myModal'">Add</button>
-            <div class="susses" v-if="susses.length">
-                <span v-for="suss in susses">{{ suss }}</span>
-            </div>
+            <button type="button" class="btn btn-info" data-toggle="modal" :data-target="'#myModal'" @click="showAdd()">Add</button>
             <div v-bind:id="'myModal'" class="modal fade" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h4 class="modal-title" v-model="titleUser">{{ titleUser }}</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add user</h4>
                         </div>
                         <div class="modal-body">
                             <div class="error" v-if="errors.length">
                                 <span v-for="error in errors">{{ error }}</span>
                             </div>
-                            <form method="post">
-                                <input id="user-name" type="text" v-model="user.name" class="form-control">
-                                <input id="user-email" type="email" v-model="user.email" class="form-control">
-                                <input type="password" id="pass" v-model="user.password" minlength="4" required class="form-control">
-                            </form>
+                            <label>name</label>
+                            <input id="user-name" type="text" v-model="user.name" class="form-control">
+                            <label>email</label>
+                            <input id="user-email" type="email" v-model="user.email" class="form-control">
+                            <label>password</label>
+                            <input type="password" id="pass" v-model="user.password" minlength="4" required class="form-control">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="text-user" class="btn btn-info" @click="addUser()">Edit</button>
+                            <button type="button" id="text-user" class="btn btn-info" @click="isAdd ? addUser() : updateUser(user)">{{ titleButton }}</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -37,59 +41,57 @@
                 <th>edit</th>
                 <th>delete</th>
             </tr>
-            <tr v-for="(contact, index) in contacts">
+            <tr v-for="(contact, index) in users">
                 <td><span>{{ contact.name }}</span></td>
                 <td><p>{{ contact.email }}</p></td>
-                <td><button type="button" class="btn btn-info" data-toggle="modal" :data-target="'#myModal'+contact.id">Edit</button></td>
+                <td><button type="button" class="btn btn-info" data-toggle="modal" :data-target="'#myModal'" @click="showAdd(false, contact, index)">Edit</button></td>
                 <td><button type="button" class="btn btn-danger" @click="deleteUser(contact, index)">Delete</button></td>
-
-                <div v-bind:id="'myModal'+contact.id" class="modal fade" role="dialog">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Edit user</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="error" v-if="errors.length">
-                                    <span v-for="error in errors">{{ error }}</span>
-                                </div>
-                                <input id="user-name" type="text" name="name" class="form-control"  v-model="contact.name">
-                                <input id="user-email" type="email" name="email" class="form-control" v-model="contact.email">
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" id="text-user" class="btn btn-info" @click="updateUser(contact)">Edit</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </tr>
         </table>
+        <Conversation :contact="selectedContact" :messages="messages" :avatar="avatar" @new="saveNewMessage"/>
     </div>
 </template>
 
 <script>
+    import Conversation from './Conversation';
+    import UserList from './UserList';
     export default {
         data() {
             return {
                 user: {
+                    id: '',
                     name: '',
                     email: '',
                     password: ''
                 },
-                contacts: [],
+                users: [],
                 errors: [],
-                susses: []
+                titleUser: '',
+                titleButton: '',
+                isAdd: true,
+                index: '',
+                selectedContact: null,
+                messages: [],
+                contacts: [],
+                avatar:null,
             }
         },
         mounted() {
+            Echo.private(`messages.${this.user.id}`)
+                .listen('NewMessage', (e) => {
+                    this.hanleIncoming(e.message);
+                });
+
             axios.get('/admin/home/user')
+            .then((response) => {
+                this.users = response.data;
+            });
+
+            axios.get('/admin/home/contact')
             .then((response) => {
                 this.contacts = response.data;
             });
         }, 
-
         methods: {
             addUser() {
                 axios.post('/admin/home/add', {
@@ -97,14 +99,16 @@
                     email: this.user.email,
                     password: this.user.password
                 }).then(response => {
-                    $('#myModal').modal('hide');
-                    $('.modal-backdrop').remove();
-                    this.errors.push(response.data.result);
-                    this.contacts.push({
-                        id: this.user.id,
-                        name: this.user.name,
-                        email: this.user.email
-                    })
+                    if (response.data.id != null) {
+                        $('#myModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        this.users.push({
+                            id: response.data.id,
+                            name: response.data.name,
+                            email: response.data.email
+                        })
+                    }
+                    
                 })
                 .catch(error => {
                     this.errors = [];
@@ -116,16 +120,18 @@
                     }
                 })
             },
-            updateUser(contact) {
-                var name = contact.name;
-                var email = contact.email;
-                axios.put('/admin/home/update/' + contact.id, {
-                    name: contact.name,
-                    email: contact.email
+            updateUser(user) {
+                axios.put('/admin/home/update/' + user.id, {
+                    name: user.name,
+                    email: user.email,
+                    password: user.password
                 }).then(response => {
-                    $('#myModal' + contact.id).modal('hide');
+                    this.$set(this.users, this.index, {
+                        name: response.data.name,
+                        email: response.data.email,
+                    });
+                    $('#myModal').modal('hide');
                     $('.modal-backdrop').remove();
-                    this.susses.push(response.data.result);
                 })
                 .catch(error => {
                     this.errors = []
@@ -140,13 +146,74 @@
             deleteUser(contact, index) {
                 axios.delete('/admin/home/delete/' + contact.id)
                 .then(response => {
-                    this.susses.push(response.data.result);
-                    this.contacts.splice(index, 1);
+                    this.users.splice(index, 1);
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors.name;
                 })
+            },
+            resetModel() {
+                this.user.id = '';
+                this.user.name = '';
+                this.user.email = '';
+                this.user.password = '';
+            },
+            showAdd(isAdd = true, contact = null, index = null) {
+                if (!isAdd) {
+                    this.isAdd = false;
+                    this.titleUser = 'Edit user';
+                    this.titleButton = 'Edit';
+                    this.user.id = contact.id;
+                    this.user.name = contact.name;
+                    this.user.email = contact.email;
+                    this.user.password = '******';
+                    this.index = index;
+                } else {
+                    this.isAdd = true;
+                    this.titleUser = 'Add user';
+                    this.titleButton = 'Add';
+                    this.resetModel();
+                }
+            },
+            startConversationWith(contact) {
+                this.updateUnreadCount(contact, true);
+
+                axios.get(`/admin/home/conversation/${contact.id}`)
+                .then((response) => {
+                    this.messages = response.data;
+                    this.selectedContact = contact;
+                });
+                axios.get(`/admin/home/avatar/${contact.id}`)
+                .then((response) => {
+                    this.avatar = response.data;
+                });
+            },
+            saveNewMessage(message) {
+                this.messages.push(message);
+            },
+            hanleIncoming(message) {
+                if (this.selectedContact && message.from == this.selectedContact.id) {
+                    this.saveNewMessage(message);
+                    return;
+                }
+
+                this.updateUnreadCount(message.from_contact, false);
+            },
+            updateUnreadCount(contact, reset) {
+                this.contacts = this.contacts.map((single) => {
+                    if (single.id !== contact.id) {
+                        return single;
+                    }
+
+                    if (reset)
+                        single.unread = 0;
+                    else 
+                        single.unread +=1;
+
+                    return single;
+                })
             }
-        }
+        },
+        components: {UserList, Conversation}
     }
 </script>

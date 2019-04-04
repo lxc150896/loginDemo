@@ -22,19 +22,16 @@ class UserController extends Controller
     public function postEditUser(LoginRequest $request, $id)
     {
         $this->userServices->updateUser($request, $id);
+        $user = $this->userRepository->find($request->id);
+        session()->flash('success', 'admin.success');
 
-        return response([
-            'result' => 'success'
-        ], 200);
+        return response()->json($user);
     }
 
     public function postDeleteUser($id)
     {
         $this->userServices->deleteUser($id);
-
-        return response([
-            'result' => 'success'
-        ], 200);
+        session()->flash('success', 'success');
     }
 
     public function postAddUser(LoginRequest $request)
@@ -45,9 +42,15 @@ class UserController extends Controller
             'password' => $request->password,
         ];
         $this->userRepository->create($dataUser);
+        $maxUser = $this->userRepository->maxUser();
+        session()->flash('success', 'success');
 
-        return response([
-            'result' => 'success'
-        ], 200);
+        return response()->json($maxUser);
+    }
+
+    public function getAvatar($id)
+    {
+        $avatar = $this->userRepository->getAvatar($id);
+        return $avatar;
     }
 }
