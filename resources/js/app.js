@@ -8,6 +8,9 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
 
 /**
  * The following block of code may be used to automatically register your
@@ -21,6 +24,8 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('login-user', require('./components/LoginUser.vue').default);
+import { store } from './store/store.js';
+import axios from 'axios';
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,5 +34,6 @@ Vue.component('login-user', require('./components/LoginUser.vue').default);
  */
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store: store,
 });

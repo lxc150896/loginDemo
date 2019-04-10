@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="msg_cotainer">
                                     {{ message.text }}
-                                    <span class="msg_time">8:40 AM, Today</span>
+                                    <span class="msg_time">{{ message.created_at.split(' ')[1] }}</span>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                             <div class="d-flex justify-content-end mb-4">
                                 <div class="msg_cotainer_send">
                                     {{ message.text }}
-                                    <span class="msg_time_send">8:55 AM, Today</span>
+                                    <span class="msg_time_send">{{ message.created_at.split(' ')[1] }}</span>
                                 </div>
                                 <div v-if="avatar" class="img_cont_msg">
                                     <img :src="avatar.avatar" class="rounded-circle user_img_msg">
