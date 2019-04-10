@@ -25,5 +25,9 @@ Route::group(['namespace' => 'User'], function () {
         Route::post('home/add', 'UserController@postAddUser')->name('addUser');
         Route::put('home/update/{id}', 'UserController@postEditUser')->name('editUser');
         Route::delete('home/delete/{id}', 'UserController@postDeleteUser')->name('deleteUser');
+        Route::get('home/contact', 'ChatController@getContact');
+        Route::get('home/conversation/{id}', 'ChatController@getMessagesFor');
+        Route::get('home/avatar/{id}', 'UserController@getAvatar');
+        Route::post('home/conversation/send', 'ChatController@sendMessage');
     });
 });

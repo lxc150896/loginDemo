@@ -17,4 +17,25 @@ class UserEloquentRepository extends AbstractEloquentRepository implements UserR
         return $this->_model
         ->find($id);
     }
+
+    public function maxUser()
+    {
+        return $this->getAll()
+        ->sortByDesc('id')
+        ->first();
+    }
+
+    public function getUser($id)
+    {
+        return $this->_model
+        ->where('id', '<>', $id)
+        ->get();
+    }
+
+    public function getAvatar($id)
+    {
+        return $this->_model
+        ->where('id', $id)
+        ->first();
+    }
 }

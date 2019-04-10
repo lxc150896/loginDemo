@@ -19,6 +19,7 @@ class UserServices
             $dataUser = [
                 'name' => $request->name,
                 'email' => $request->email,
+                'password' => $request->password,
             ];
             $this->userRepository->update($id, $dataUser);
             $dataId = [

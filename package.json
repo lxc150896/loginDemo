@@ -24,6 +24,9 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "@ionic/app-scripts": "^3.2.3"
+        "@ionic/app-scripts": "^3.2.3",
+        "bootstrap4-notify": "^4.0.3",
+        "laravel-echo": "^1.5.3",
+        "pusher-js": "^4.4.0"
     }
 }
