@@ -29,4 +29,7 @@ Route::group(['namespace' => 'User'], function () {
        Route::delete('home/delete/{id}', 'UserController@postDeleteUser')->name('deleteUser');
        Route::get('home/avatar/{id}', 'UserController@getAvatar');
    });
+    Route::group(['namespace' => 'User'], function() {
+    	Route::resource('groups', 'GroupController');
+    });
 });
