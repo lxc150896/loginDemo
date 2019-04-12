@@ -11,23 +11,17 @@
 |
 */
 
-Route::group(['namespace' => 'User'], function () {
-    Route::get('register', 'HomeController@getRegisterUser')->name('register');
-    Route::post('register', 'HomeController@postRegisterUser');
-    Route::group(['prefix' => 'login', 'middleware' => 'CheckLogedIn'], function () {
-        Route::get('/', 'LoginController@getLogin')->name('login');
-        Route::post('/', 'LoginController@postLogin');
-    });
-    Route::get('logout', 'HomeController@getLogout');
-    Route::group(['prefix' => 'admin', 'middleware' => 'CheckLogedOut'], function() {
-        Route::get('home', 'HomeController@getHome');
-        Route::get('home/user', 'HomeController@getUser')->name('user');
-        Route::post('home/add', 'UserController@postAddUser')->name('addUser');
-        Route::put('home/update/{id}', 'UserController@postEditUser')->name('editUser');
-        Route::delete('home/delete/{id}', 'UserController@postDeleteUser')->name('deleteUser');
-        Route::get('home/contact', 'ChatController@getContact');
-        Route::get('home/conversation/{id}', 'ChatController@getMessagesFor');
-        Route::get('home/avatar/{id}', 'UserController@getAvatar');
-        Route::post('home/conversation/send', 'ChatController@sendMessage');
-    });
+Route::get('/', function () {
+    return view('welcome');
 });
+
+Route::get('/chat', 'ChatController@getChat');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/contacts', 'ChatController@getContact');
+Route::get('/avatars', 'ChatController@getAvatar');
+Route::get('/conversation/{id}', 'ChatController@getMessagesFor');
+Route::post('/conversation/send', 'ChatController@send');
