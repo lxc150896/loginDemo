@@ -6,7 +6,6 @@
 
 <script>
     import MessagesFeed from './MessagesFeed';
-    import MessageComposer from './MessageComposer';
 
 	export default {
         data() {
@@ -44,6 +43,6 @@
                 })
             }
         },
-        components: {MessagesFeed, MessageComposer}
+        components: {MessagesFeed}
 	}
 </script>
