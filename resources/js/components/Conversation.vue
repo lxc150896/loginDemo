@@ -1,14 +1,12 @@
 <template>
-	<div class="conversation col-md-8 float-right">
+    <div class="conversation col-md-8 float-right">
         <MessagesFeed :contact="contact" :messages="messages" :avatars="avatars" @send="sendMessage"/>
     </div>
 </template>
 
 <script>
     import MessagesFeed from './MessagesFeed';
-    import MessageComposer from './MessageComposer';
-
-	export default {
+    export default {
         data() {
             return {
                 avatars: []
@@ -35,7 +33,6 @@
                 if (!this.contact) {
                     return;
                 }
-
                 axios.post('/conversation/send', {
                     contact_id: this.contact.id,
                     text: text
@@ -44,6 +41,6 @@
                 })
             }
         },
-        components: {MessagesFeed, MessageComposer}
-	}
+        components: {MessagesFeed}
+    }
 </script>
