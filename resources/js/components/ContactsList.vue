@@ -1,12 +1,12 @@
 <template>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <div class="contacts-list col-md-4 float-left">
         <div class="chat">
-            <div class="card mb-sm-3 mb-md-0">
+            <div class="card mb-sm-3 mb-md-0 contacts_card">
                 <div class="card-header">
                     <div class="input-group">
                         <input type="text" placeholder="Search..." name="" class="form-control search">
                         <div class="input-group-prepend">
-                            <span class="input-group-text search_btn"><i class=""></i></span>
+                            <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
                         </div>
                     </div>
                 </div>
@@ -15,7 +15,7 @@
                         <li v-for="contact in sortedContacts" :key="contact.id" @click="selectContact(contact)" :class="{ 'selected': contact == selected }">
                             <div class="d-flex bd-highlight">
                                 <div class="img_cont">
-                                    <img class="rounded-circle user_img" :src="contact.avatar ? contact.avatar : 'http://hinhnendethuong.com/uploads/images/hinh-anh-anime-chibi-1493821547-1.png'" :alt="contact.name">
+                                    <img :src="contact.avatar" :alt="contact.name" class="rounded-circle user_img">
                                     <span class="online_icon offline" v-if="contact.unread"><div class="offline_text">{{ contact.unread }}</div></span>
                                 </div>
                                 <div class="user_info">
