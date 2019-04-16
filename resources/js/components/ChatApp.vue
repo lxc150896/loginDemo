@@ -1,14 +1,15 @@
 <template>
     <div class="chat-app">
-            <Conversation :contact="selectedContact" :messages="messages" @new="saveNewMessage"/>
-            <ContactsList :contacts="contacts" @selected="startConversationWith"/>
+        <UsersList/>
+        <Conversation :contact="selectedContact" :messages="messages" @new="saveNewMessage"/>
+        <ContactsList :contacts="contacts" @selected="startConversationWith"/>
     </div>
 </template>
 
 <script>
+    import UsersList from './UsersList';
     import Conversation from './Conversation';
     import ContactsList from './ContactsList';
-
     export default {
         props: {
             user: {
@@ -25,10 +26,9 @@
         },
         mounted() {
             Echo.private(`messages.${this.user.id}`)
-                .listen('NewMessage', (e) => {
-                    this.hanleIncoming(e.message);
-                });
-
+            .listen('NewMessage', (e) => {
+                this.hanleIncoming(e.message);
+            });
             axios.get('/contacts')
             .then((response) => {
                 this.contacts = response.data;
@@ -37,7 +37,6 @@
         methods: {
             startConversationWith(contact) {
                 this.updateUnreadCount(contact, true);
-
                 axios.get(`/conversation/${contact.id}`)
                 .then((response) => {
                     this.messages = response.data;
@@ -52,7 +51,6 @@
                     this.saveNewMessage(message);
                     return;
                 }
-
                 this.updateUnreadCount(message.from_contact, false);
             },
             updateUnreadCount(contact, reset) {
@@ -60,16 +58,14 @@
                     if (single.id !== contact.id) {
                         return single;
                     }
-
                     if (reset)
                         single.unread = 0;
                     else
                         single.unread += 1;
-
                     return single;
                 })
             }
         },
-        components: {Conversation, ContactsList}
+        components: {Conversation, ContactsList, UsersList}
     }
 </script>
