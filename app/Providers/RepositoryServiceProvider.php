@@ -15,6 +15,18 @@ class RepositoryServiceProvider extends ServiceProvider
             'App\Repositories\Contracts\MessageRepository',
             'App\Repositories\Eloquents\MessageEloquentRepository',
         ],
+        [
+            'App\Repositories\Contracts\GroupRepository',
+            'App\Repositories\Eloquents\GroupEloquentRepository',
+        ],
+        [
+            'App\Repositories\Contracts\ConversationRepository',
+            'App\Repositories\Eloquents\ConversationEloquentRepository',
+        ],
+        [
+            'App\Repositories\Contracts\GroupUserRepository',
+            'App\Repositories\Eloquents\GroupUserEloquentRepository',
+        ],
     ];
 
     /**
