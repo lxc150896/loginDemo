@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-	return view('welcome');
+    return view('welcome');
 });
 Route::get('/chat', 'ChatController@getChat');
 Auth::routes();
@@ -24,12 +24,12 @@ Route::post('/conversation/send', 'ChatController@send');
 Route::get('home/user', 'HomeController@getUser');
 Route::group(['namespace' => 'User'], function () {
     Route::group(['prefix' => 'admin'], function() {
-       Route::post('home/add', 'UserController@postAddUser')->name('addUser');
-       Route::put('home/update/{id}', 'UserController@postEditUser')->name('editUser');
-       Route::delete('home/delete/{id}', 'UserController@postDeleteUser')->name('deleteUser');
-       Route::get('home/avatar/{id}', 'UserController@getAvatar');
-   });
-    Route::group(['namespace' => 'User'], function() {
-    	Route::resource('groups', 'GroupController');
-    });
+        Route::post('home/add', 'UserController@postAddUser')->name('addUser');
+        Route::put('home/update/{id}', 'UserController@postEditUser')->name('editUser');
+        Route::delete('home/delete/{id}', 'UserController@postDeleteUser')->name('deleteUser');
+        Route::get('home/avatar/{id}', 'UserController@getAvatar');
+        Route::post('search/user', 'UserController@searchUser');
+ });
+    Route::resource('groups', 'GroupController');
 });
+Route::resource('conversations', 'ConversationController');

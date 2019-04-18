@@ -3,25 +3,31 @@
         <UsersList/>
         <Conversation :contact="selectedContact" :messages="messages" @new="saveNewMessage"/>
         <ContactsList :contacts="contacts" @selected="startConversationWith"/>
+        <AddUserGroup/>
+        <NewGroup :groups="groups" :user="user" @group="statusGroupId" :groupId="groupId"/>
     </div>
 </template>
 
 <script>
     import UsersList from './UsersList';
     import Conversation from './Conversation';
+    import NewGroup from './NewGroup';
     import ContactsList from './ContactsList';
+    import AddUserGroup from './AddUserGroup';
     export default {
         props: {
             user: {
                 type:Object,
                 required: true
-            }
+            },
         },
         data() {
             return {
                 selectedContact: null,
                 messages: [],
-                contacts: []
+                contacts: [],
+                groups:[],
+                groupId: 1,
             }
         },
         mounted() {
@@ -29,9 +35,17 @@
             .listen('NewMessage', (e) => {
                 this.hanleIncoming(e.message);
             });
+            Echo.private('users.' + this.user.id)
+            .listen('GroupCreated', (e) => {
+                this.saveGroups(e.group);
+            });
             axios.get('/contacts')
             .then((response) => {
                 this.contacts = response.data;
+            });
+            axios.get('/groups')
+            .then((response) => {
+                this.groups = response.data;
             });
         },
         methods: {
@@ -64,8 +78,14 @@
                         single.unread += 1;
                     return single;
                 })
+            },
+            saveGroups(group) {
+                this.groups.push(group);
+            },
+            statusGroupId(group) {
+                this.groupId = group.id;
             }
         },
-        components: {Conversation, ContactsList, UsersList}
+        components: {Conversation, ContactsList, UsersList, NewGroup, AddUserGroup}
     }
 </script>

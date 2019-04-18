@@ -38,4 +38,19 @@ class UserEloquentRepository extends AbstractEloquentRepository implements UserR
         ->where('id', $id)
         ->first();
     }
+
+    public function getUserGroup($id)
+    {
+        return $this->_model
+        ->where('id', $id)
+        ->with('groups')
+        ->get();
+    }
+
+    public function searchUser($text)
+    {
+        return $this->_model
+        ->where('name', 'like', "%$text%")
+        ->get();
+    }
 }
